@@ -1,20 +1,22 @@
+#!/usr/bin/env python3
+"""
+Automated script to manage Hugging Face Spaces - uses credentials from HF-Credentials.txt
+"""
 
 import sys
 import os
 from huggingface_hub import HfApi, login, create_repo, delete_repo, Repository
-import requests
 
-def setup_hf_auth():
-    token = input("Enter your Hugging Face token: ").strip()
-    if not token:
-        print("❌ No token provided. Exiting.")
-        sys.exit(1)
+def load_credentials():
+    """Load credentials from HF-Credentials.txt"""
     try:
-        login(token=token)
-        print("✅ Successfully authenticated with Hugging Face")
-        return token
+        with open("HF-Credentials.txt", "r") as f:
+            lines = f.readlines()
+        username = lines[0].split(":")[1].strip().strip("<>")
+        token = lines[1].split(":")[1].strip().strip("<>")
+        return username, token
     except Exception as e:
-        print(f"❌ Authentication failed: {e}")
+        print(f"❌ Failed to load credentials: {e}")
         sys.exit(1)
 
 def list_user_models(username, token):
@@ -69,7 +71,7 @@ def create_model_space(model_id, username, token):
 def create_space_files(space_name, model_id, model_name, token):
     """Create and upload app.py, requirements.txt, and README.md to the space"""
     
-    # README.md content
+    # README.md content with ZeroGPU hardware
     readme_content = f"""---
 title: {model_name} Training Space
 emoji: 🚀
@@ -80,7 +82,7 @@ sdk_version: 4.36.1
 app_file: app.py
 pinned: false
 license: apache-2.0
-hardware: zero-a10g
+hardware: zero-gpu-a10g
 ---
 
 # {model_name} Training Space
@@ -281,11 +283,15 @@ accelerate
         print(f"❌ Failed to upload files to {space_name}: {e}")
 
 def main():
-    username = input("Enter your Hugging Face username: ").strip()
-    if not username:
-        print("❌ No username provided. Exiting.")
+    # Load credentials automatically
+    username, token = load_credentials()
+    
+    try:
+        login(token=token)
+        print(f"✅ Successfully authenticated as {username}")
+    except Exception as e:
+        print(f"❌ Authentication failed: {e}")
         sys.exit(1)
-    token = setup_hf_auth()
 
     print("🔍 Fetching your models from Hugging Face Hub...")
     model_ids = list_user_models(username, token)
@@ -305,10 +311,19 @@ def main():
     else:
         print("No spaces to delete.")
 
-    print("\n� Creating one Space per model...")
+    print("\n🚀 Creating one Space per model with ZeroGPU...")
+    created_count = 0
     for model_id in model_ids:
-        create_model_space(model_id, username, token)
-    print("\n✅ All done!")
+        space_name = create_model_space(model_id, username, token)
+        if space_name:
+            created_count += 1
+    
+    print(f"\n✅ Created {created_count}/{len(model_ids)} spaces successfully!")
+    print("Each space includes:")
+    print("  - 🧪 Test functionality")
+    print("  - 🏋️ Training capabilities")
+    print("  - 🔧 Fine-tuning options")
+    print("  - ⚡ ZeroGPU acceleration")
 
 if __name__ == "__main__":
     main()

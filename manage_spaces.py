@@ -5,10 +5,9 @@ Script to manage Hugging Face Spaces - delete existing and create new ones
 
 import os
 import sys
-import time
-from pathlib import Path
-from huggingface_hub import HfApi, login, create_repo, delete_repo, list_spaces
+from huggingface_hub import HfApi, login, create_repo, delete_repo
 import argparse
+import time
 
 def setup_hf_auth():
     """Setup Hugging Face authentication"""
@@ -25,53 +24,26 @@ def setup_hf_auth():
         print(f"❌ Authentication failed: {e}")
         sys.exit(1)
 
-def get_existing_spaces(username, token):
-    """Get list of existing spaces for the user"""
+def list_user_spaces(username, token):
+    """List all spaces for a user"""
     api = HfApi()
     try:
-        spaces = list(api.list_spaces(author=username, token=token))
-        return [space.id for space in spaces]
+        spaces = api.list_repos(author=username, repo_type="space", token=token)
+        return [repo.id for repo in spaces]
     except Exception as e:
         print(f"❌ Failed to list spaces: {e}")
         return []
 
-def delete_all_spaces(username, token):
-    """Delete all existing spaces"""
+def delete_space(space_id, token):
+    """Delete a Hugging Face Space"""
     api = HfApi()
-    existing_spaces = get_existing_spaces(username, token)
-    
-    if not existing_spaces:
-        print("ℹ️  No existing spaces found")
+    try:
+        delete_repo(repo_id=space_id, repo_type="space", token=token)
+        print(f"✅ Deleted space: {space_id}")
         return True
-    
-    print(f"🗑️  Found {len(existing_spaces)} existing spaces:")
-    for space in existing_spaces:
-        print(f"  - {space}")
-    
-    confirm = input(f"\n⚠️  Are you sure you want to delete ALL {len(existing_spaces)} spaces? (type 'DELETE' to confirm): ").strip()
-    if confirm != 'DELETE':
-        print("❌ Space deletion cancelled")
+    except Exception as e:
+        print(f"❌ Failed to delete space {space_id}: {e}")
         return False
-    
-    deleted_count = 0
-    failed_count = 0
-    
-    for space_id in existing_spaces:
-        try:
-            print(f"🗑️  Deleting space: {space_id}")
-            api.delete_repo(repo_id=space_id, repo_type="space", token=token)
-            deleted_count += 1
-            print(f"✅ Deleted: {space_id}")
-            time.sleep(1)  # Rate limiting
-        except Exception as e:
-            print(f"❌ Failed to delete {space_id}: {e}")
-            failed_count += 1
-    
-    print(f"\n📊 Deletion Summary:")
-    print(f"✅ Deleted: {deleted_count}")
-    print(f"❌ Failed: {failed_count}")
-    
-    return failed_count == 0
 
 def create_model_space(model_name, username, token):
     """Create a new space for a model with train/finetune/test functionality"""
