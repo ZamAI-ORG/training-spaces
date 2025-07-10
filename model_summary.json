@@ -1,0 +1,153 @@
+{
+  "tasal9/pashto-base-bloom": {
+    "name": "pashto-base-bloom",
+    "id": "tasal9/pashto-base-bloom",
+    "last_modified": "None",
+    "complete": true,
+    "has_model_weights": true,
+    "has_config": true,
+    "has_tokenizer_files": true,
+    "model_files": [
+      "config.json",
+      "model.safetensors",
+      "tokenizer.json",
+      "tokenizer_config.json"
+    ],
+    "file_count": 9,
+    "space_name": "tasal9/pashto-base-bloom-space"
+  },
+  "tasal9/ZamAI-LIama3-Pashto": {
+    "name": "ZamAI-LIama3-Pashto",
+    "id": "tasal9/ZamAI-LIama3-Pashto",
+    "last_modified": "None",
+    "complete": false,
+    "has_model_weights": false,
+    "has_config": false,
+    "has_tokenizer_files": false,
+    "model_files": [],
+    "file_count": 6,
+    "space_name": "tasal9/ZamAI-LIama3-Pashto-space"
+  },
+  "tasal9/Multilingual-ZamAI-Embeddings": {
+    "name": "Multilingual-ZamAI-Embeddings",
+    "id": "tasal9/Multilingual-ZamAI-Embeddings",
+    "last_modified": "None",
+    "complete": true,
+    "has_model_weights": true,
+    "has_config": true,
+    "has_tokenizer_files": true,
+    "model_files": [
+      "config.json"
+    ],
+    "file_count": 18,
+    "space_name": "tasal9/Multilingual-ZamAI-Embeddings-space"
+  },
+  "tasal9/ZamAI-Mistral-7B-Pashto": {
+    "name": "ZamAI-Mistral-7B-Pashto",
+    "id": "tasal9/ZamAI-Mistral-7B-Pashto",
+    "last_modified": "None",
+    "complete": false,
+    "has_model_weights": false,
+    "has_config": false,
+    "has_tokenizer_files": false,
+    "model_files": [],
+    "file_count": 13,
+    "space_name": "tasal9/ZamAI-Mistral-7B-Pashto-space"
+  },
+  "tasal9/ZamAI-Phi-3-Mini-Pashto": {
+    "name": "ZamAI-Phi-3-Mini-Pashto",
+    "id": "tasal9/ZamAI-Phi-3-Mini-Pashto",
+    "last_modified": "None",
+    "complete": false,
+    "has_model_weights": false,
+    "has_config": false,
+    "has_tokenizer_files": false,
+    "model_files": [],
+    "file_count": 2,
+    "space_name": "tasal9/ZamAI-Phi-3-Mini-Pashto-space"
+  },
+  "tasal9/ZamAI-Whisper-v3-Pashto": {
+    "name": "ZamAI-Whisper-v3-Pashto",
+    "id": "tasal9/ZamAI-Whisper-v3-Pashto",
+    "last_modified": "None",
+    "complete": false,
+    "has_model_weights": false,
+    "has_config": true,
+    "has_tokenizer_files": false,
+    "model_files": [
+      "config.json"
+    ],
+    "file_count": 3,
+    "space_name": "tasal9/ZamAI-Whisper-v3-Pashto-space"
+  },
+  "tasal9/zamai-pashto-chat-8b": {
+    "name": "zamai-pashto-chat-8b",
+    "id": "tasal9/zamai-pashto-chat-8b",
+    "last_modified": "None",
+    "complete": false,
+    "has_model_weights": false,
+    "has_config": true,
+    "has_tokenizer_files": false,
+    "model_files": [
+      "config.json"
+    ],
+    "file_count": 4,
+    "space_name": "tasal9/zamai-pashto-chat-8b-space"
+  },
+  "tasal9/zamai-translator-pashto-en": {
+    "name": "zamai-translator-pashto-en",
+    "id": "tasal9/zamai-translator-pashto-en",
+    "last_modified": "None",
+    "complete": false,
+    "has_model_weights": false,
+    "has_config": true,
+    "has_tokenizer_files": false,
+    "model_files": [
+      "config.json"
+    ],
+    "file_count": 4,
+    "space_name": "tasal9/zamai-translator-pashto-en-space"
+  },
+  "tasal9/zamai-qa-pashto": {
+    "name": "zamai-qa-pashto",
+    "id": "tasal9/zamai-qa-pashto",
+    "last_modified": "None",
+    "complete": false,
+    "has_model_weights": false,
+    "has_config": true,
+    "has_tokenizer_files": false,
+    "model_files": [
+      "config.json"
+    ],
+    "file_count": 4,
+    "space_name": "tasal9/zamai-qa-pashto-space"
+  },
+  "tasal9/zamai-sentiment-pashto": {
+    "name": "zamai-sentiment-pashto",
+    "id": "tasal9/zamai-sentiment-pashto",
+    "last_modified": "None",
+    "complete": false,
+    "has_model_weights": false,
+    "has_config": true,
+    "has_tokenizer_files": false,
+    "model_files": [
+      "config.json"
+    ],
+    "file_count": 4,
+    "space_name": "tasal9/zamai-sentiment-pashto-space"
+  },
+  "tasal9/zamai-dialogpt-pashto-v3": {
+    "name": "zamai-dialogpt-pashto-v3",
+    "id": "tasal9/zamai-dialogpt-pashto-v3",
+    "last_modified": "None",
+    "complete": false,
+    "has_model_weights": false,
+    "has_config": true,
+    "has_tokenizer_files": false,
+    "model_files": [
+      "config.json"
+    ],
+    "file_count": 4,
+    "space_name": "tasal9/zamai-dialogpt-pashto-v3-space"
+  }
+}

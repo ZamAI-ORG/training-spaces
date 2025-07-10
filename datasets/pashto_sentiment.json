@@ -1,0 +1,22 @@
+[
+  {
+    "text": "دا فلم ډیر ښه و",
+    "label": "positive"
+  },
+  {
+    "text": "زه له دې خواړو څخه خوند نه اخلم",
+    "label": "negative"
+  },
+  {
+    "text": "نن هوا ډیره ښه ده",
+    "label": "positive"
+  },
+  {
+    "text": "دا کتاب ډیر په زړه پوري دی",
+    "label": "positive"
+  },
+  {
+    "text": "زه دا خوښ نه کوم",
+    "label": "negative"
+  }
+]
