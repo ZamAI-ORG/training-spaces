@@ -1,0 +1,22 @@
+{
+  "tasal9/pashto-base-bloom-space": {
+    "status": "RUNNING",
+    "running": "True",
+    "accessible": "True"
+  },
+  "tasal9/ZamAI-LIama3-Pashto-space": {
+    "status": "RUNNING",
+    "running": "True",
+    "accessible": "True"
+  },
+  "tasal9/Multilingual-ZamAI-Embeddings-space": {
+    "status": "RUNNING",
+    "running": "True",
+    "accessible": "True"
+  },
+  "tasal9/ZamAI-Mistral-7B-Pashto-space": {
+    "status": "RUNNING",
+    "running": "True",
+    "accessible": "True"
+  }
+}
