@@ -1,0 +1,10 @@
+{
+  "base_model": "microsoft/DialoGPT-medium",
+  "task": "question-answering",
+  "training_method": "Fine-tuning on QA datasets",
+  "dataset": "tasal9/ZamAI_Pashto_Dataset",
+  "epochs": 4,
+  "batch_size": 3,
+  "learning_rate": 5e-05,
+  "created_at": "2025-07-09T18:49:28.014518"
+}
