@@ -41,11 +41,11 @@ def test_model(input_text, max_length, temperature, top_p):
         return f"Error: {str(e)}"
 
 @spaces.GPU
-def train_model(dataset_path, epochs, learning_rate, status=gr.Progress()):
+def train_model(hf_dataset_name, epochs, learning_rate, status=gr.Progress()):
     """Train the model on the given dataset"""
     try:
-        status(0, desc="Loading dataset...")
-        dataset = load_dataset("json", data_files=dataset_path, split="train")
+        status(0, desc="Loading dataset from HF Hub...")
+        dataset = load_dataset(hf_dataset_name, split="train")
         status(0.2, desc="Loading model...")
         model, tokenizer = load_model()
         if model is None or tokenizer is None:
@@ -76,10 +76,10 @@ def train_model(dataset_path, epochs, learning_rate, status=gr.Progress()):
         return f"Error: {str(e)}"
 
 @spaces.GPU
-def finetune_model(dataset_path, epochs, learning_rate, status=gr.Progress()):
+def finetune_model(hf_dataset_name, epochs, learning_rate, status=gr.Progress()):
     """Fine-tune the model on the given dataset (demo version)"""
     # For demo, same as train_model, but could load a checkpoint
-    return train_model(dataset_path, epochs, learning_rate, status)
+    return train_model(hf_dataset_name, epochs, learning_rate, status)
 
 # Create Gradio interface
 with gr.Blocks(title="pashto-base-bloom Space") as iface:
@@ -96,21 +96,21 @@ with gr.Blocks(title="pashto-base-bloom Space") as iface:
                 output_text = gr.Textbox(label="Output", lines=6)
         submit_btn.click(fn=test_model, inputs=[input_text, max_length, temperature, top_p], outputs=output_text)
     with gr.Tab("Train Model"):
-        gr.Markdown("Upload a JSON dataset for training. Format: [{'text': ...}]")
-        dataset_file = gr.File(label="Training Dataset (JSON)")
+        gr.Markdown("Enter a Hugging Face dataset name (e.g. tasal9/pashto_chat)")
+        hf_dataset_name = gr.Textbox(label="HF Dataset Name", value="tasal9/pashto_chat")
         epochs = gr.Number(label="Epochs", value=3, minimum=1, maximum=10)
         learning_rate = gr.Number(label="Learning Rate", value=5e-5)
         train_btn = gr.Button("Start Training")
         train_status = gr.Textbox(label="Training Status", lines=6)
-        train_btn.click(fn=train_model, inputs=[dataset_file, epochs, learning_rate], outputs=train_status)
+        train_btn.click(fn=train_model, inputs=[hf_dataset_name, epochs, learning_rate], outputs=train_status)
     with gr.Tab("Fine-tune Model"):
-        gr.Markdown("Upload a JSON dataset for fine-tuning. Format: [{'text': ...}]")
-        finetune_file = gr.File(label="Fine-tuning Dataset (JSON)")
+        gr.Markdown("Enter a Hugging Face dataset name (e.g. tasal9/pashto_chat)")
+        ft_hf_dataset_name = gr.Textbox(label="HF Dataset Name", value="tasal9/pashto_chat")
         ft_epochs = gr.Number(label="Epochs", value=3, minimum=1, maximum=10)
         ft_learning_rate = gr.Number(label="Learning Rate", value=5e-5)
         finetune_btn = gr.Button("Start Fine-tuning")
         finetune_status = gr.Textbox(label="Fine-tuning Status", lines=6)
-        finetune_btn.click(fn=finetune_model, inputs=[finetune_file, ft_epochs, ft_learning_rate], outputs=finetune_status)
+        finetune_btn.click(fn=finetune_model, inputs=[ft_hf_dataset_name, ft_epochs, ft_learning_rate], outputs=finetune_status)
 
 if __name__ == "__main__":
     iface.launch()
