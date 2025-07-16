@@ -83,34 +83,37 @@ def finetune_model(hf_dataset_name, epochs, learning_rate, status=gr.Progress())
 
 # Create Gradio interface
 with gr.Blocks(title="pashto-base-bloom Space") as iface:
-    gr.Markdown("# pashto-base-bloom\nTest, Train, and Fine-tune your Pashto model!")
+    gr.Markdown("# pashto-base-bloom\nEasily Test, Train, and Fine-tune your Pashto model!")
+    status_box = gr.Textbox(label="Status", value="Ready", interactive=False)
     with gr.Tab("Test Model"):
+        gr.Markdown("### Generate Pashto Text\nEnter your prompt and adjust generation settings.")
         with gr.Row():
-            with gr.Column():
-                input_text = gr.Textbox(label="Input", lines=3)
-                max_length = gr.Slider(label="Max Length", minimum=10, maximum=256, value=100)
-                temperature = gr.Slider(label="Temperature", minimum=0.1, maximum=2.0, value=1.0)
-                top_p = gr.Slider(label="Top-p", minimum=0.1, maximum=1.0, value=0.95)
-                submit_btn = gr.Button("Generate")
-            with gr.Column():
-                output_text = gr.Textbox(label="Output", lines=6)
+            input_text = gr.Textbox(label="Input", lines=3, placeholder="Write your prompt in Pashto or English...")
+            max_length = gr.Slider(label="Max Length", minimum=10, maximum=256, value=100)
+            temperature = gr.Slider(label="Temperature", minimum=0.1, maximum=2.0, value=1.0)
+            top_p = gr.Slider(label="Top-p", minimum=0.1, maximum=1.0, value=0.95)
+            submit_btn = gr.Button("Generate")
+        output_text = gr.Textbox(label="Output", lines=6, interactive=False)
         submit_btn.click(fn=test_model, inputs=[input_text, max_length, temperature, top_p], outputs=output_text)
+        submit_btn.click(lambda: "Task: Text Generation Running...", outputs=status_box)
     with gr.Tab("Train Model"):
-        gr.Markdown("Enter a Hugging Face dataset name (e.g. tasal9/pashto_chat)")
-        hf_dataset_name = gr.Textbox(label="HF Dataset Name", value="tasal9/pashto_chat")
+        gr.Markdown("### Train from Scratch\nEnter your Hugging Face dataset name and hyperparameters.")
+        hf_dataset_name = gr.Textbox(label="HF Dataset Name", value="tasal9/pashto_chat", placeholder="e.g. tasal9/ZamAi-Pashto-Datasets-V2")
         epochs = gr.Number(label="Epochs", value=3, minimum=1, maximum=10)
         learning_rate = gr.Number(label="Learning Rate", value=5e-5)
         train_btn = gr.Button("Start Training")
-        train_status = gr.Textbox(label="Training Status", lines=6)
+        train_status = gr.Textbox(label="Training Status", lines=6, interactive=False)
         train_btn.click(fn=train_model, inputs=[hf_dataset_name, epochs, learning_rate], outputs=train_status)
+        train_btn.click(lambda: "Task: Training Started...", outputs=status_box)
     with gr.Tab("Fine-tune Model"):
-        gr.Markdown("Enter a Hugging Face dataset name (e.g. tasal9/pashto_chat)")
-        ft_hf_dataset_name = gr.Textbox(label="HF Dataset Name", value="tasal9/pashto_chat")
+        gr.Markdown("### Fine-tune Existing Model\nEnter your Hugging Face dataset name and hyperparameters.")
+        ft_hf_dataset_name = gr.Textbox(label="HF Dataset Name", value="tasal9/pashto_chat", placeholder="e.g. tasal9/ZamAi-Pashto-Datasets-V2")
         ft_epochs = gr.Number(label="Epochs", value=3, minimum=1, maximum=10)
         ft_learning_rate = gr.Number(label="Learning Rate", value=5e-5)
         finetune_btn = gr.Button("Start Fine-tuning")
-        finetune_status = gr.Textbox(label="Fine-tuning Status", lines=6)
+        finetune_status = gr.Textbox(label="Fine-tuning Status", lines=6, interactive=False)
         finetune_btn.click(fn=finetune_model, inputs=[ft_hf_dataset_name, ft_epochs, ft_learning_rate], outputs=finetune_status)
+        finetune_btn.click(lambda: "Task: Fine-tuning Started...", outputs=status_box)
 
 if __name__ == "__main__":
     iface.launch()
