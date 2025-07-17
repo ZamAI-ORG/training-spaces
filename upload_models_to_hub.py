@@ -1,18 +1,23 @@
-
 import sys
 import os
 from huggingface_hub import HfApi, login, create_repo, delete_repo, Repository
 import requests
 
 def setup_hf_auth():
-    token = input("Enter your Hugging Face token: ").strip()
-    if not token:
-        print("❌ No token provided. Exiting.")
-        sys.exit(1)
+    """Set up Hugging Face authentication using a token from a file."""
     try:
+        with open("HF-Credentials.txt", "r") as f:
+            token = f.read().strip()
+        if not token:
+            print("❌ No token found in HF-Credentials.txt. Please create the file and add your token.")
+            sys.exit(1)
+        
         login(token=token)
         print("✅ Successfully authenticated with Hugging Face")
         return token
+    except FileNotFoundError:
+        print("❌ HF-Credentials.txt not found. Please create it and add your Hugging Face token.")
+        sys.exit(1)
     except Exception as e:
         print(f"❌ Authentication failed: {e}")
         sys.exit(1)
@@ -243,12 +248,14 @@ if __name__ == "__main__":
 """
 
     # requirements.txt content
-    requirements_content = """gradio==4.36.1
+    requirements_content = """gradio
 spaces
 torch
 transformers
 datasets
 accelerate
+sentencepiece
+protobuf
 """
 
     try:
@@ -299,13 +306,18 @@ def main():
     print("\n🔍 Fetching your existing Spaces...")
     spaces = list_user_spaces(username, token)
     if spaces:
-        print(f"Found {len(spaces)} spaces. Deleting...")
-        for space in spaces:
-            delete_space(space, token)
+        print(f"Found {len(spaces)} spaces.")
+        delete_input = input("Do you want to delete all existing spaces? (yes/no): ").strip().lower()
+        if delete_input == 'yes':
+            print("Deleting spaces...")
+            for space in spaces:
+                delete_space(space, token)
+        else:
+            print("Skipping deletion of spaces.")
     else:
         print("No spaces to delete.")
 
-    print("\n� Creating one Space per model...")
+    print("\n🚀 Creating one Space per model...")
     for model_id in model_ids:
         create_model_space(model_id, username, token)
     print("\n✅ All done!")

@@ -462,27 +462,90 @@ def update_model_summary(model_name, username, token, has_weights=True):
         print(f"❌ Failed to update model summary: {e}")
         return False
 
+def get_all_model_names():
+    """Return a list of all model directory names in models/ (excluding hidden and backup dirs)"""
+    models_dir = Path("models")
+    if not models_dir.exists():
+        return []
+    names = []
+    for d in models_dir.iterdir():
+        if d.is_dir() and not d.name.startswith('.') and '_backup_' not in d.name:
+            names.append(d.name)
+    return names
+
 def main():
     try:
         # Parse arguments
         parser = argparse.ArgumentParser(description="ZamAI Model Weight Loader and Space Checker")
-        parser.add_argument("--model_name", type=str, help="Name of the model to load weights for", required=True)
+        parser.add_argument("--model_name", type=str, help="Name of the model to load weights for")
         parser.add_argument("--fix_space", action="store_true", help="Fix space configuration for fine-tuning")
         parser.add_argument("--upload_space", action="store_true", help="Upload space to Hugging Face Hub")
+        parser.add_argument("--all", action="store_true", help="Process all models in models/ directory")
         args = parser.parse_args()
-        
+
         print(f"\n{'='*60}")
         print(f"🚀 ZamAI Model Weight Loader and Space Checker")
-        print(f"   Model: {args.model_name}")
+        if args.all:
+            print(f"   Mode: ALL MODELS")
+        else:
+            print(f"   Model: {args.model_name}")
         print(f"{'='*60}\n")
-        
+
         # Load credentials
         print("📋 Loading credentials...")
         username, token = load_credentials()
         if username is None or token is None:
             print("❌ Failed to load valid credentials. Exiting.")
             return
-        
+
+        if args.all:
+            model_names = get_all_model_names()
+            if not model_names:
+                print("❌ No models found in models/ directory.")
+                return
+            summary = []
+            for model_name in model_names:
+                print(f"\n{'-'*40}\nProcessing model: {model_name}\n{'-'*40}")
+                model_info = get_model_info(model_name, username, token)
+                if model_info is None:
+                    print("❌ Failed to get model information. Creating minimal entry.")
+                    model_info = {
+                        "name": model_name,
+                        "id": f"{username}/{model_name}"
+                    }
+                has_model_files, model_dir, backup_dirs = check_model_directory(model_name)
+                if model_dir is None:
+                    model_dir = f"models/{model_name}"
+                backup_dir = None
+                if has_model_files and model_dir:
+                    print(f"✅ Model directory {model_dir} has model files")
+                elif backup_dirs:
+                    print(f"📂 Found {len(backup_dirs)} backup directories")
+                    backup_dir = backup_dirs[0]
+                    print(f"📂 Using backup directory {backup_dir}")
+                else:
+                    print(f"❌ No model files found for {model_name}")
+                    print(f"⚠️ Creating minimal model directory structure...")
+                    os.makedirs(model_dir, exist_ok=True)
+                    with open(f"{model_dir}/config.json", "w") as f:
+                        f.write('{"model_type": "auto", "architectures": ["AutoModel"]}')
+                    with open(f"{model_dir}/tokenizer.json", "w") as f:
+                        f.write('{"model_type": "auto"}')
+                    print(f"✅ Created minimal model files in {model_dir}")
+                    has_model_files = True
+                print(f"📤 Uploading model weights...")
+                success = upload_model_weights(model_name, username, token, model_dir, backup_dir)
+                if success:
+                    print(f"📝 Updating model summary...")
+                    update_model_summary(model_name, username, token, True)
+                summary.append((model_name, success))
+            print(f"\n{'='*60}")
+            print("SUMMARY:")
+            for name, ok in summary:
+                print(f"  {name}: {'✅ Success' if ok else '❌ Failed'}")
+            print(f"{'='*60}")
+            return
+
         # Get model info
         print(f"📊 Getting model information for {args.model_name}...")
         model_info = get_model_info(args.model_name, username, token)
