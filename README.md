@@ -6,6 +6,14 @@ Reusable training and experiment spaces for ZamAI Labs (templates, scripts, and 
 - Labs: https://github.com/ZamAI-ORG
 
 
+# Training Spaces
+
+Reusable training and experiment spaces for ZamAI Labs (templates, scripts, and reproducible runs).
+
+- Website: https://zamai.dev
+- Labs: https://github.com/ZamAI-ORG
+
+
 # ZamAI Models and Training Spaces
 
 This repository contains scripts to manage Hugging Face models and spaces for the ZamAI project.
